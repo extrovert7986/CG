@@ -1,17 +1,21 @@
 exe := Shader.exe
 
 # different methods to compile obj in different file hierarchy 
-CallbackObj := CallbackFunc.o
 MainObj := main.o
+CallbackObj := CallbackFunc.o
+ComponentObj := Camera.o
 
 # Specify the compiler flag
-CFLAGS = -lGL -lglut -lGLEW
+CXXFLAGS = -lGL -lGLU -lglut -lGLEW
 
-all: ${MainObj} ${CallbackObj}
-	${CXX} -o ${exe} ./obj/* ${CFLAGS}
+all: ${MainObj} ${CallbackObj} ${ComponentObj}
+	${CXX} -o ${exe} ./obj/* ${CXXFLAGS}
 
-${MainObj}: *.cpp ${CallbackObj}
-	${CXX} -c $< -o ./obj/$@ ${CFLAGS}
+${MainObj}: ./source/main.cpp ${CallbackObj} ${ComponentObj}
+	${CXX} -c ./source/main.cpp -o ./obj/$@
 
-${CallbackObj}: ./Callback/*.cpp
-	${CXX} -c $< -o ./obj/$@ ${CFLAGS}
+${CallbackObj}:
+	${CXX} -c ./source/callback/$*.cpp -o ./obj/$@
+
+${ComponentObj}:
+	${CXX} -c ./source/component/$*.cpp -o ./obj/$@
